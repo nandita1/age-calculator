@@ -1,0 +1,183 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --white: hsl(0, 0%, 100%);
+    --off-white: hsl(0, 0%, 94%);
+    --light-grey: hsl(0, 0%, 86%);
+    --smokey-grey: hsl(0, 1%, 44%);
+    --off-black: hsl(0, 0%, 8%);
+    --purple: hsl(259, 100%, 65%);
+    --light-red: hsl(0, 100%, 67%);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--off-white);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--off-black);
+}
+
+main {
+    padding: 3.5rem;
+    background: var(--white);
+    border-radius: 24px 24px 200px 24px;
+    width: 840px;
+    max-width: 100%;
+}
+
+.form-elements {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0,1fr));
+    grid-gap: 2rem;
+}
+
+.form-elements > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--smokey-grey);
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-style: bold;
+    letter-spacing: 0.25rem;
+}
+
+input {
+    border-radius: 8px;
+    border: 1px solid var(--light-grey);
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: bold;
+    outline: none;
+    padding: 0.75rem 1.5rem;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input:focus {
+    border-color: var(--purple);
+    caret-color: var(--purple);
+}
+
+.submit-button-container {
+    padding: 3rem 0;
+    position: relative;
+}
+
+.submit-button-container hr {
+    color: var(--light-grey);
+}
+
+.submit-button-container button {
+    position: absolute;
+    inset: 0 0 auto auto;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: none;
+    outline-color: transparent;
+    background-color: var(--purple);
+    cursor: pointer;
+}
+
+.submit-button-container button:hover {
+    background-color: var(--off-black)
+}
+
+.age {
+    font-size: 6.5rem;
+    font-weight: 800;
+    font-style: italic;
+    line-height: 1.2;
+    letter-spacing: -2%;
+    white-space: nowrap;
+}
+
+.age-value {
+    color: var(--purple)
+}
+
+.error-msg {
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.error-msg:empty {
+    display: none;
+}
+
+.error-msg, .error-element label{
+    color: var(--light-red);
+}
+
+.error-element input {
+    border-color: var(--light-red);
+}
+
+
+@media (width <= 600px) {
+    main {
+        width: 343px;
+        padding: 3rem 1.5rem;
+        border-radius: 24px 24px 100px 24px;
+    }
+
+    .form-elements {
+        grid-template-columns: repeat(3, minmax(0,1fr));
+        grid-gap: 1rem;
+    }
+
+    .form-elements > div {
+        gap: 0.25rem;
+    }
+
+    label {
+        font-size: 0.75rem;
+    }
+
+    input {
+        font-size: 1.25rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .submit-button-container {
+        margin-top: 2rem;
+        padding: 2rem 0;
+    }
+
+    .submit-button-container button {
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: 64px;
+        height: 64px;
+    }
+
+    .age {
+        font-size: 3.5rem;
+        line-height: 1.1;
+        margin-top: 2rem;
+    }
+}
