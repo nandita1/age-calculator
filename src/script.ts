@@ -1,19 +1,24 @@
 
-const form = document.getElementById("age-calculator-form")
-const dayEl = document.getElementById('day')
-const monthEl = document.getElementById('month')
-const yearEl = document.getElementById('year')
+const form = <HTMLFormElement>document.getElementById("age-calculator-form")
+const dayEl = <HTMLInputElement>document.getElementById('day')
+const monthEl = <HTMLInputElement>document.getElementById('month')
+const yearEl = <HTMLInputElement>document.getElementById('year')
 
 const requiredFieldErrorMesage = 'This field is required';
 const mustBeInThePastErrorMessage = 'Must be in the past';
 const invalidMonthErrorMessage = 'Must be a valid month';
 const invalidDayErrorMessage = 'Must be a valid day';
 
-const isLeapYear = (year) => (0 == year % 4) && (0 != year % 100) || (0 == year % 400)
+const isLeapYear = (year: number) => (0 == year % 4) && (0 != year % 100) || (0 == year % 400)
 
-const isValidMonth = (month) => month < 1 || month > 12
+const isValidMonth = (month: number) => month < 1 || month > 12
 
-const checkYear = (year, currentDate) => {
+interface CheckYearParams {
+    readonly year: number;
+    readonly currentDate: Date;
+}
+
+const checkYear = ({year, currentDate}: CheckYearParams) => {
     const currentYear = currentDate.getFullYear()
     if(!year) {
         return requiredFieldErrorMesage;
@@ -21,10 +26,14 @@ const checkYear = (year, currentDate) => {
     if(year > currentYear){
         return mustBeInThePastErrorMessage;
     }
-    return
+    return ''
 };
 
-const checkMonth = (year, month, currentDate) => {
+interface CheckMonthParams extends CheckYearParams{
+    readonly month: number;
+}
+
+const checkMonth = ({year, month, currentDate}: CheckMonthParams) => {
     const currentYear = currentDate.getFullYear()
     const currentMonth = currentDate.getMonth()
     if(!month) {
@@ -36,10 +45,17 @@ const checkMonth = (year, month, currentDate) => {
     if(year === currentYear && month > currentMonth){ 
         return mustBeInThePastErrorMessage;
     }
-    return
+    return ''
 }
 
-const checkDay = (year, month, day, daysInMonths, currentDate) => {
+interface CheckDayParams extends CheckMonthParams {
+    readonly day: number;
+}
+
+const checkDay = ({year, month, day, currentDate}: CheckDayParams) => {
+    const noOfDaysInFeb = isLeapYear(year) ? 29 : 28
+    const daysInMonths = [31, noOfDaysInFeb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
     const currentYear = currentDate.getFullYear()
     const currentMonth = currentDate.getMonth() + 1;
     const currentDay = currentDate.getDay()
@@ -47,52 +63,58 @@ const checkDay = (year, month, day, daysInMonths, currentDate) => {
     if(!day) {
         return requiredFieldErrorMesage;
     }
-    if(day <= 1 || (isValidMonth(month) && days > daysInMonths[month-1])) {
+    if(day < 1 || (isValidMonth(month) && day > daysInMonths[month-1])) {
         return invalidDayErrorMessage;
     }
     if(year === currentYear && month ===  currentMonth && day > currentDay){ 
         return mustBeInThePastErrorMessage;
     }
-    return
+    return ''
 }
 
-const removeErrorClassFromInput = (input) => {
+const removeErrorClassFromInput = (input: HTMLInputElement) => {
     const formField = input.parentElement;
     // remove the error class
-    formField.classList.remove('error-element');
+    formField?.classList.remove('error-element');
 }
 
-const addErrorClassToInput = (input) => {
+const addErrorClassToInput = (input: HTMLInputElement) => {
     const formField = input.parentElement;
     // add the error class
-    formField.classList.add('error-element');
+    formField?.classList.add('error-element');
 }
 
-const removeError = (input) => {
+const removeError = (input: HTMLInputElement) => {
      // get the form-field element
      const formField = input.parentElement;
      // show the error message
-     const error = formField.querySelector('.error-msg');
-     error.textContent = '';
+     const errorMsgElement = formField?.querySelector('.error-msg');
+     if(errorMsgElement) {errorMsgElement.textContent = '';}
 }
 
-const showError = (input, message) => {
+const showError = (input: HTMLInputElement, message: string) => {
     // get the form-field element
     const formField = input.parentElement;
     // show the error message
-    const error = formField.querySelector('.error-msg');
-    error.textContent = message;
+    const errorMsgElement = formField?.querySelector('.error-msg');
+    if(errorMsgElement) {errorMsgElement.textContent = message;}
 };
 
-const extractNumbers = (input) => {
+const extractNumbers = (str?: string) => {
     // Use regular expression to match only numbers
-    const numbers = input.match(/\d+/g);
+    const numbers = str?.match(/\d+/g);
   
     // Join the matched numbers into a single string
-    return numbers ? numbers.join('') : '';
+    return numbers?.join('') ?? '';
 }
 
-const calculateAge = (day, month, year) => {
+interface CalculateAgeParams {
+    readonly day: number;
+    readonly month: number;
+    readonly year: number;
+}
+
+const calculateAge = ({day, month, year}: CalculateAgeParams) => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month (0-11)
@@ -109,28 +131,25 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(form);
 
-    const day = Number(extractNumbers(formData.get('day')))
-    const month = Number(extractNumbers(formData.get('month')))
-    const year = Number(extractNumbers(formData.get('year')))
+    const day = Number(extractNumbers(formData.get('day')?.toString()))
+    const month = Number(extractNumbers(formData.get('month')?.toString()))
+    const year = Number(extractNumbers(formData.get('year')?.toString()))
 
     const currentDate = new Date()
 
-    const noOfDaysInFeb = isLeapYear(year) ? 29 : 28
-    const daysInMonths = [31, noOfDaysInFeb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    const yearErrorMessage = checkYear(year, currentDate)
+    const yearErrorMessage = checkYear({year, currentDate})
     if(yearErrorMessage) {
         showError(yearEl, yearErrorMessage)
     } else {
         removeError(yearEl)
     }
-    const monthErrorMessage = checkMonth(year, month, currentDate)
+    const monthErrorMessage = checkMonth({year, month, currentDate})
     if(monthErrorMessage) {
         showError(monthEl, monthErrorMessage)
     } else {
         removeError(monthEl)
     }
-    const dayErrorMessage = checkDay(year, month, day, daysInMonths, currentDate)
+    const dayErrorMessage = checkDay({year, month, day, currentDate})
     if(monthErrorMessage) {
         showError(dayEl, dayErrorMessage)
     } else {
@@ -150,9 +169,9 @@ form.addEventListener('submit', (e) => {
     removeErrorClassFromInput(dayEl)
     
     
-    const {years, months, days} = calculateAge(day, month, year);
+    const {years, months, days} = calculateAge({day, month, year});
     const ageValues = document.getElementsByClassName('age-value');
-    ageValues[0].textContent = years;
-    ageValues[1].textContent = months;
-    ageValues[2].textContent = days;
+    ageValues[0].textContent = years.toString();
+    ageValues[1].textContent = months.toString();
+    ageValues[2].textContent = days.toString();
 })

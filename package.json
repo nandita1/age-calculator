@@ -1,0 +1,23 @@
+{
+  "name": "age-calculator-app-main",
+  "version": "1.0.0",
+  "description": "This is a solution to the [Age calculator app challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/age-calculator-app-dF9DFFpj-Q). Frontend Mentor challenges help you improve your coding skills by building realistic projects.",
+  "main": "script.js",
+  "scripts": {
+    "start": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nandita1/age-calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nandita1/age-calculator/issues"
+  },
+  "homepage": "https://github.com/nandita1/age-calculator#readme",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
